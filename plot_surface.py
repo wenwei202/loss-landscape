@@ -160,6 +160,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='plotting loss surface')
     parser.add_argument('--mpi', '-m', action='store_true', help='use mpi')
     parser.add_argument('--cuda', '-c', action='store_true', help='use cuda')
+    parser.add_argument('--data-parallel', action='store_true', help='model was saved in data parallel mode')
     parser.add_argument('--threads', default=2, type=int, help='number of threads')
     parser.add_argument('--ngpu', type=int, default=1, help='number of GPUs to use for each rank, useful for data parallel evaluation')
     parser.add_argument('--batch_size', default=128, type=int, help='minibatch size')
@@ -175,6 +176,7 @@ if __name__ == '__main__':
 
     # model parameters
     parser.add_argument('--model', default='resnet56', help='model name')
+    parser.add_argument('--num-blocks', type=str, default=None, help='the number of blocks in resnet')
     parser.add_argument('--model_folder', default='', help='the common folder that contains model_file and model_file2')
     parser.add_argument('--model_file', default='', help='path to the trained model file')
     parser.add_argument('--model_file2', default='', help='use (model_file2 - model_file) as the xdirection')
@@ -205,6 +207,8 @@ if __name__ == '__main__':
     parser.add_argument('--plot', action='store_true', default=False, help='plot figures after computation')
 
     args = parser.parse_args()
+    if args.num_blocks is not None:
+        args.num_blocks = list(map(int, args.num_blocks.split('-')))
 
     torch.manual_seed(123)
     #--------------------------------------------------------------------------
@@ -241,7 +245,7 @@ if __name__ == '__main__':
     #--------------------------------------------------------------------------
     # Load models and extract parameters
     #--------------------------------------------------------------------------
-    net = model_loader.load(args.dataset, args.model, args.model_file)
+    net = model_loader.load(args.dataset, args.model, args.model_file, data_parallel=args.data_parallel, num_blocks=args.num_blocks)
     w = net_plotter.get_weights(net) # initial parameters
     s = copy.deepcopy(net.state_dict()) # deepcopy since state_dict are references
     if args.ngpu > 1:

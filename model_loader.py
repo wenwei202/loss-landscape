@@ -1,7 +1,7 @@
 import os
 import cifar10.model_loader
 
-def load(dataset, model_name, model_file, data_parallel=False):
+def load(dataset, model_name, model_file, data_parallel=False, num_blocks=None):
     if dataset == 'cifar10':
-        net = cifar10.model_loader.load(model_name, model_file, data_parallel)
+        net = cifar10.model_loader.load(model_name, model_file, data_parallel, num_blocks=num_blocks)
     return net
