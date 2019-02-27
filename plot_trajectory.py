@@ -19,12 +19,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Plot optimization trajectory')
     parser.add_argument('--dataset', default='cifar10', help='dataset')
     parser.add_argument('--model', default='resnet56', help='trained models')
+    parser.add_argument('--data-parallel', action='store_true', help='model was saved in data parallel mode')
+    parser.add_argument('--num-blocks', type=str, default=None, help='the number of blocks in resnet')
     parser.add_argument('--model_folder', default='', help='folders for models to be projected')
     parser.add_argument('--dir_type', default='weights',
         help="""direction type: weights (all weights except bias and BN paras) |
                                 states (include BN.running_mean/var)""")
     parser.add_argument('--ignore', default='', help='ignore bias and BN paras: biasbn (no bias or bn)')
-    parser.add_argument('--prefix', default='model_', help='prefix for the checkpint model')
+    parser.add_argument('--prefix', default='model_pad_', help='prefix for the checkpint model')
     parser.add_argument('--suffix', default='.t7', help='prefix for the checkpint model')
     parser.add_argument('--start_epoch', default=0, type=int, help='min index of epochs')
     parser.add_argument('--max_epoch', default=300, type=int, help='max number of epochs')
@@ -32,12 +34,13 @@ if __name__ == '__main__':
     parser.add_argument('--dir_file', default='', help='load the direction file for projection')
 
     args = parser.parse_args()
-
+    if args.num_blocks is not None:
+        args.num_blocks = list(map(int, args.num_blocks.split('-')))
     #--------------------------------------------------------------------------
     # load the final model
     #--------------------------------------------------------------------------
     last_model_file = args.model_folder + '/' + args.prefix + str(args.max_epoch) + args.suffix
-    net = model_loader.load(args.dataset, args.model, last_model_file)
+    net = model_loader.load(args.dataset, args.model, last_model_file, data_parallel=args.data_parallel, num_blocks=args.num_blocks)
     w = net_plotter.get_weights(net)
     s = net.state_dict()
 
@@ -61,6 +64,6 @@ if __name__ == '__main__':
     #--------------------------------------------------------------------------
     # projection trajectory to given directions
     #--------------------------------------------------------------------------
-    proj_file = project_trajectory(dir_file, w, s, args.dataset, args.model,
+    proj_file = project_trajectory(args, dir_file, w, s, args.dataset, args.model,
                                 model_files, args.dir_type, 'cos')
     plot_2D.plot_trajectory(proj_file, dir_file)

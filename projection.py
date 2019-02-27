@@ -123,7 +123,7 @@ def project_2D(d, dx, dy, proj_method):
     return x, y
 
 
-def project_trajectory(dir_file, w, s, dataset, model_name, model_files,
+def project_trajectory(args, dir_file, w, s, dataset, model_name, model_files,
                dir_type='weights', proj_method='cos'):
     """
         Project the optimization trajectory onto the given two directions.
@@ -153,7 +153,7 @@ def project_trajectory(dir_file, w, s, dataset, model_name, model_files,
 
     xcoord, ycoord = [], []
     for model_file in model_files:
-        net2 = model_loader.load(dataset, model_name, model_file)
+        net2 = model_loader.load(dataset, model_name, model_file, data_parallel=args.data_parallel, num_blocks=args.num_blocks)
         if dir_type == 'weights':
             w2 = net_plotter.get_weights(net2)
             d = net_plotter.get_diff_weights(w, w2)
@@ -204,7 +204,7 @@ def setup_PCA_directions(args, model_files, w, s):
     matrix = []
     for model_file in model_files:
         print (model_file)
-        net2 = model_loader.load(args.dataset, args.model, model_file)
+        net2 = model_loader.load(args.dataset, args.model, model_file, data_parallel=args.data_parallel, num_blocks=args.num_blocks)
         if args.dir_type == 'weights':
             w2 = net_plotter.get_weights(net2)
             d = net_plotter.get_diff_weights(w, w2)
