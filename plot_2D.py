@@ -1,6 +1,8 @@
 """
     2D plotting funtions
 """
+import matplotlib
+matplotlib.use('pdf')
 
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt

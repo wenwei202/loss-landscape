@@ -3,6 +3,8 @@
     Usage example:
     >>  python plot_surface.py --x=-1:1:101 --y=-1:1:101 --model resnet56 --cuda
 """
+import matplotlib
+matplotlib.use('pdf')
 import argparse
 import copy
 import h5py

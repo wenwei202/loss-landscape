@@ -1,6 +1,8 @@
 """
     1D plotting routines
 """
+import matplotlib
+matplotlib.use('pdf')
 
 from matplotlib import pyplot as pp
 import h5py
