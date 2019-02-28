@@ -12,7 +12,7 @@ import argparse
 import numpy as np
 from os.path import exists
 import seaborn as sns
-
+import math
 
 def plot_2d_contour(surf_file, surf_name='train_loss', vmin=0.1, vmax=10, vlevel=0.5, show=False):
     """Plot 2D contour map and 3D surface."""
@@ -87,7 +87,12 @@ def plot_trajectory(proj_file, dir_file, show=False):
     f = h5py.File(proj_file, 'r')
     fig = plt.figure()
     plt.plot(f['proj_xcoord'], f['proj_ycoord'], marker='.')
-    print (min(f['proj_xcoord']), max(f['proj_xcoord']), min(f['proj_ycoord']), max(f['proj_ycoord']))
+    print ('coordinates: %d %d %d %d'% (
+        int(math.floor(min(f['proj_xcoord']))),
+        int(math.ceil(max(f['proj_xcoord']))),
+        int(math.floor(min(f['proj_ycoord']))),
+        int(math.ceil(max(f['proj_ycoord']))))
+    )
     plt.tick_params('y', labelsize='x-large')
     plt.tick_params('x', labelsize='x-large')
     f.close()
