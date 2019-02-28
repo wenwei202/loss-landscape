@@ -116,6 +116,16 @@ python h52vtp.py --surf_file path_to_surf_file --surf_name train_loss --zmax  10
 
 4. Select `Save screenshot` in the File menu to save the image.
 
+## Visualize trajectory
+Generate two directions by PCA and get trajectory projection in the 2D plain.
+```
+MODEL_PATH="../pytorch-examples/cifar10/results/2019-02-26_20-25-38"
+python plot_trajectory.py --model CifarResNetBasic --num-blocks 5-5-5 --model_folder ${MODEL_PATH} --dir_type weights  --ignore biasbn  --start_epoch 0 --max_epoch 396 --save_epoch 4 --data-parallel
+```
+Generate contour with the PCA directions, and plot trajectory on it
+```
+mpirun -n 4 python plot_surface.py --mpi --cuda --model CifarResNetBasic --num-blocks 5-5-5 --x=-25:5:51 --y=-20:10:51 --model_file ${MODEL_PATH}/best_ckpt.t7 --dir_type weights --xignore biasbn --yignore biasbn --proj_file ${MODEL_PATH}/PCA_weights_ignore\=biasbn_save_epoch\=4/directions.h5_proj_cos.h5 --dir_file ${MODEL_PATH}/PCA_weights_ignore\=biasbn_save_epoch\=4/directions.h5  --plot --data-parallel
+```
 ## Reference
 
 [1] Ian J Goodfellow, Oriol Vinyals, and Andrew M Saxe. Qualitatively characterizing neural network optimization problems. ICLR, 2015.
