@@ -87,6 +87,7 @@ def plot_trajectory(proj_file, dir_file, show=False):
     f = h5py.File(proj_file, 'r')
     fig = plt.figure()
     plt.plot(f['proj_xcoord'], f['proj_ycoord'], marker='.')
+    print (min(f['proj_xcoord']), max(f['proj_xcoord']), min(f['proj_ycoord']), max(f['proj_ycoord']))
     plt.tick_params('y', labelsize='x-large')
     plt.tick_params('x', labelsize='x-large')
     f.close()
