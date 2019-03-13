@@ -39,7 +39,13 @@ models = {
     'CifarResNetBasic'      : resnetv2.CifarResNetBasic,
 }
 
-def load(model_name, model_file=None, data_parallel=False, num_blocks=None):
+def zeroinit_nonexisting_params(model, state_dict):
+    for n, p in model.named_parameters():
+        if n not in state_dict:
+            print('%s are set to zeros' % n)
+            p.data.zero_()
+
+def load(model_name, model_file=None, data_parallel=False, num_blocks=None, strict=True):
     if num_blocks is not None:
         net = models[model_name](num_blocks)
     else:
@@ -51,12 +57,16 @@ def load(model_name, model_file=None, data_parallel=False, num_blocks=None):
     if model_file:
         assert os.path.exists(model_file), model_file + " does not exist."
         stored = torch.load(model_file, map_location=lambda storage, loc: storage)
+        stored_states = None
         if 'state_dict' in stored.keys():
-            net.load_state_dict(stored['state_dict'])
+            stored_states = stored['state_dict']
         elif 'net' in stored.keys():
-            net.load_state_dict(stored['net'])
+            stored_states = stored['net']
         else:
-            net.load_state_dict(stored)
+            stored_states = stored
+        net.load_state_dict(stored_states, strict=strict)
+        if not strict:
+            zeroinit_nonexisting_params(net, stored_states)
 
     if data_parallel: # convert the model back to the single GPU version
         net = net.module
