@@ -37,6 +37,7 @@ models = {
     'wrn110_2_noshort'      : resnet.WRN110_2_noshort,
     'wrn110_4_noshort'      : resnet.WRN110_4_noshort,
     'CifarResNetBasic'      : resnetv2.CifarResNetBasic,
+    'PlainNet'              : resnetv2.PlainNet,
     'ResNetBasic'           : resnetv2.ResNetBasic,
     'CifarPlainNet'         : resnetv2.CifarPlainNet,
     'CifarSwitchResNetBasic': resnetv2.CifarSwitchResNetBasic,
