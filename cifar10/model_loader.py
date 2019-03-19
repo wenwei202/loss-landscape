@@ -37,6 +37,12 @@ models = {
     'wrn110_2_noshort'      : resnet.WRN110_2_noshort,
     'wrn110_4_noshort'      : resnet.WRN110_4_noshort,
     'CifarResNetBasic'      : resnetv2.CifarResNetBasic,
+    'ResNetBasic'           : resnetv2.ResNetBasic,
+    'CifarPlainNet'         : resnetv2.CifarPlainNet,
+    'CifarSwitchResNetBasic': resnetv2.CifarSwitchResNetBasic,
+    'CifarPlainNoBNNet'     : resnetv2.CifarPlainNoBNNet,
+    'PlainNoBNNet'          : resnetv2.PlainNoBNNet,
+    'ResNetBottleneck'      : resnetv2.ResNetBottleneck,
 }
 
 def zeroinit_nonexisting_params(model, state_dict):
